@@ -1,0 +1,55 @@
+import string
+from itertools import groupby
+
+
+
+file = open("FileName.txt","r",encoding="utf8")
+if file.mode == 'r':
+    c = file.read()
+    print(c)
+    
+    
+    
+s = c
+s = s.split() 
+
+table = str.maketrans("","",string.punctuation) 
+s = [w.translate(table) for w in s] #gets rid of all puncuation
+
+s = [w.replace("“", "") for w in s] #gets rid of weird symbols
+s = [w.replace("”", "") for w in s] 
+s = [w.replace("‘", "") for w in s] 
+s = [w.replace("’", "") for w in s] 
+
+s = [w for w in s if len(w)>1] #drops strings with only one letter like 'a' or 'I'
+
+s = [w.lower() for w in s] #converts capital letters to lower case letters
+
+s.sort(key = len) #sorts all words into groups based on number of letters
+
+s = [list(g) for k, g in groupby(s, key = len)] #improves efficiency as we know that string of length 2 wont be an anagram 
+                                                #for string of length 3 
+
+d = {} #empty dictionary
+for i in range(0,len(s)): 
+    count = []
+    for j in range(0,len(s[i])):
+        words = s[i][j] #gets every word in the list
+        key = ''.join(sorted(words)) #sorts the words and adds them as keys
+        if key in d: #if a key is already in d, append it as an item to that key
+            d[key].append(words)                    
+        else: #else, make it a key
+            d[key] = [words]
+            
+            
+Anagrams = [] #list of all anagram sets
+for key in d:                  
+    d[key] = list(set(d[key])) #ignore repetitive words when making keys
+    if len(d[key])>1: #only add strings with length more than 2 as keys
+        Anagrams.append(set(d[key])) #append the key to the list
+        
+        
+for i in range(0, len(Anagrams)):
+    print(Anagrams[i]) #prints each set
+    
+print(len(Anagrams)) #how many sets of anagrams
