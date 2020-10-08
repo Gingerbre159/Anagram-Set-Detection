@@ -1,55 +1,75 @@
+# coding: utf-8
+
+# TJ Carter
+# 10/8/20
+
+# This is a program that will read in a .txt document, then output all anagrams found within the document.
+
+
+# Imports
+
 import string
 from itertools import groupby
 
 
+# Function
 
-file = open("FileName.txt","r",encoding="utf8")
-if file.mode == 'r':
-    c = file.read()
-    print(c)
+def DetectAnagrams(file):
     
+    # Makes the file into a list where each word is a list item
+    s = file.read()
+    s = s.split()
     
+    # Gets rid of all puncuation/quotation marks
+    table = str.maketrans("","",string.punctuation) 
+    s = [w.translate(table) for w in s]
+    s = [w.replace("“", "") for w in s]
+    s = [w.replace("”", "") for w in s] 
+    s = [w.replace("‘", "") for w in s] 
+    s = [w.replace("’", "") for w in s] 
     
-s = c
-s = s.split() 
-
-table = str.maketrans("","",string.punctuation) 
-s = [w.translate(table) for w in s] #gets rid of all puncuation
-
-s = [w.replace("“", "") for w in s] #gets rid of weird symbols
-s = [w.replace("”", "") for w in s] 
-s = [w.replace("‘", "") for w in s] 
-s = [w.replace("’", "") for w in s] 
-
-s = [w for w in s if len(w)>1] #drops strings with only one letter like 'a' or 'I'
-
-s = [w.lower() for w in s] #converts capital letters to lower case letters
-
-s.sort(key = len) #sorts all words into groups based on number of letters
-
-s = [list(g) for k, g in groupby(s, key = len)] #improves efficiency as we know that string of length 2 wont be an anagram 
-                                                #for string of length 3 
-
-d = {} #empty dictionary
-for i in range(0,len(s)): 
-    count = []
-    for j in range(0,len(s[i])):
-        words = s[i][j] #gets every word in the list
-        key = ''.join(sorted(words)) #sorts the words and adds them as keys
-        if key in d: #if a key is already in d, append it as an item to that key
-            d[key].append(words)                    
-        else: #else, make it a key
-            d[key] = [words]
+    # Drops strings with only one letter like 'a' or 'I'
+    s = [w for w in s if len(w)>1]
+    
+    # Converts capital letters to lower case letters
+    s = [w.lower() for w in s]
+    
+    # Sorts all words into groups based on number of letters
+    s.sort(key = len)
+    
+    # Makes s into a list of lists of words grouped by number of letters
+    # This improves efficiency as we know that string of length 2 wont be an anagram for string of length 3
+    s = [list(g) for k, g in groupby(s, key = len)]
+    
+    # Creates and fills a dictionary
+    d = {} #empty dictionary
+    for i in range(0,len(s)): 
+        count = []
+        for j in range(0,len(s[i])):
+            words = s[i][j] #gets every word in the list
+            key = ''.join(sorted(words)) #sorts the words and adds them as keys
+            if key in d: #if a key is already in d, append it as an item to that key
+                d[key].append(words)                    
+            else: #else, make it a key
+                d[key] = [words]
+                
+    # List of all anagram sets
+    Anagrams = []
+    for key in d:                  
+        d[key] = list(set(d[key])) #ignore repetitive words when making keys
+        if len(d[key])>1: #only add strings with length more than 2 as keys
+            Anagrams.append(set(d[key])) #append the key to the list
             
-            
-Anagrams = [] #list of all anagram sets
-for key in d:                  
-    d[key] = list(set(d[key])) #ignore repetitive words when making keys
-    if len(d[key])>1: #only add strings with length more than 2 as keys
-        Anagrams.append(set(d[key])) #append the key to the list
-        
-        
-for i in range(0, len(Anagrams)):
-    print(Anagrams[i]) #prints each set
-    
-print(len(Anagrams)) #how many sets of anagrams
+    # Prints the output
+    for i in range(0, len(Anagrams)):
+        print(Anagrams[i]) #prints each set
+    print(len(Anagrams)) #how many sets of anagrams
+
+
+# Main
+
+print("Please write the path to the .txt document: ")
+path = input() #r"C:\Users\riley\prideandprejudice.txt"
+
+with open(path, "r", encoding="utf8") as file:
+    DetectAnagrams(file)
