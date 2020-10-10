@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# TJ Carter
+# Thomas Carter
 # 10/8/20
 
 # This is a program that will read in a .txt document, then output all anagrams found within the document.
